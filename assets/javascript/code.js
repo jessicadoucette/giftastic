@@ -1,80 +1,111 @@
-var movies = ["Hereditary", "Sorry to Bother You", "The Big Sick", "Manifesto", "American Psycho", "500 Day of Summer", "Little Gangster", "Get Out", "Little Miss Sunshine", "RBG"]; 
 
-//tether movies buttons to gifs
-function displayMovieGifs() {
-	var movie = $(this).attr("data-name");
-	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-	 		movie + "&api_key=4lfoNujflLOjMztJEiMYoIDzjy6IdDFC";
+$(document).ready(function () {
+	//array of movies
+	var movies = ["Hereditary", "Sorry to Bother You", "The Big Sick", "Manifesto", "American Psycho", "500 Day of Summer", "Little Gangster", "Get Out", "Little Miss Sunshine", "RBG"];
 
-	// Creating an AJAX call for the specific movie button being clicked
-	$.ajax({
-		url: queryURL,
-		method: "GET"
-	}).then(function(response) {
-		console.log(response); 
+	//tether movies buttons to gifs
+	function displayMovieGifs() {
+		var movie = $(this).attr("data-name");
+		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+			movie + "&api_key=4lfoNujflLOjMztJEiMYoIDzjy6IdDFC";
 
-		var results = response.data;
-		console.log(response.data);
+		// Creating an AJAX call for the specific movie button being clicked
+		$.ajax({
+			url: queryURL,
+			method: "GET"
+		}).then(function (response) {
+			console.log(response);
 
-		for (var i = 0; i < 10; i++) {
-		
-		var gifDiv = $("<div>"); 
-		//rating
-		var rating = results[i].rating; 
-		console.log("Rating: " + rating); 
+			var results = response.data;
+			console.log(response.data);
 
-		var displayRating = $("<p>").text("Rating : " + rating); 
-		console.log(displayRating);
+			for (var i = 0; i < 10; i++) {
 
-		//gif
-		var personImage = $("<img>");
+				var gifDiv = $("<div class='card text-center' style='width:25rem'>");
+				//rating
+				var rating = results[i].rating;
+				console.log("Rating: " + rating);
 
-              // Giving the image tag an src attribute of a proprty pulled off the
-              // result item
-              personImage.attr("src", results[i].images.fixed_height.url );
+				var displayRating = $("<p>").text("Rating : " + rating);
+				console.log(displayRating);
 
+				//title
+				var title = results[i].title;
+				var displayTitle = $("<p class='title'>").text(title);
 
-			gifDiv.append(displayRating);
-		gifDiv.append(personImage); 
-	
+				// gif
+				var animate = results[i].images.fixed_height.url;
+				var still = results[i].images.fixed_height_still.url;
+				var movieImage = $("<img>");
+				movieImage.attr('src', still);
+				movieImage.attr('data-still', still);
+				movieImage.attr('data-animate', animate);
+				movieImage.attr('data-state', 'still');
+				movieImage.addClass('animateImage');
 
-		$("#displayGifs").prepend(gifDiv);
-		}
-	}); 
+				// gifDiv.prepend(displayTitle);
+				gifDiv.prepend(displayTitle);
+				gifDiv.append(displayRating);
+				gifDiv.append(movieImage);
 
-}
-
-function renderButtons() {
-
-	//for no repeat buttons
-	$("#displayButtons").empty(); 
-
-	//Loop through array of movies
-
-	for (i = 0; i < movies.length; i++) {
-
-		var newButton = $("<button>");
-		newButton.addClass("movie-btn btn btn-primary"); 
-		newButton.attr("data-name", movies[i]);
-		newButton.text(movies[i]);
-		$("#displayButtons").append(newButton); 
+				$("#displayGifs").prepend(gifDiv);
+			}
+		});
 	}
-}
 
-$("#add-movie").on("click", function(event) {
-event.preventDefault(); 
-var movie = $("#movie-input").val().trim(); 
-movies.push(movie); 
-renderButtons(); 
-console.log("Render add-buttons"); 
-}); 
+	$(document).on("click", ".animateImage", function () {
+		console.log(this); 
+		var state = $(this).attr("data-state");
+		if (state == "still") {
+			console.log(1); 
+			$(this).attr("src", $(this).attr("data-animate"));
+			$(this).attr("data-state", "animate");
+		} else {
+			console.log(2); 
+			$(this).attr("src", $(this).attr("data-still"));
+			$(this).attr("data-state", "still");
+		}
+	});
+
+	//render buttons
+	function renderButtons() {
+		//for no repeat buttons
+		$("#displayButtons").empty();
+
+		//Loop through array of movies
+		for (i = 0; i < movies.length; i++) {
+
+			var newButton = $("<button>");
+			newButton.addClass("movie-btn btn btn-primary");
+			newButton.attr("data-name", movies[i]);
+			newButton.text(movies[i]);
+			$("#displayButtons").append(newButton);
+		}
+	}
+
+	//add movie function
+	$("#add-movie").on("click", function (event) {
+
+		// $("#displayGifs").empty();
+		event.preventDefault();
+		var movie = $("#movie-input").val().trim();
+		movies.push(movie);
+		renderButtons();
+		console.log("Render add-buttons");
+		$("#movie-input").val("");
+		return false;
+	});
+
+	//display movie gifs when user presses
+	$(document).on("click", ".movie-btn", displayMovieGifs);
+
+	//make the buttons appear on page
+	renderButtons();
+	console.log("Render buttons");
+
+});
 
 
-$(document).on("click", ".movie-btn", displayMovieGifs);
-
-//make the buttons appear on page
-renderButtons(); 
-console.log("Render buttons");
 
 
 

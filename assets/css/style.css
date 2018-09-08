@@ -10,3 +10,43 @@ img {
 #buttons {
 	margin-bottom: 20px;
 }
+
+.card {
+	margin: 0 auto; 
+	padding: 20px;
+	margin-bottom: 10px;
+}
+
+.title {
+	font-size: 20px;
+}
+
+#displayGifs {
+	padding-top: 20px;
+}
+
+.jumbotron {
+	background-image: url("../images/sundance.jpg");
+	background-size: cover;
+	background-position: center;
+	padding: 100px 0;
+	color: white;
+}
+
+h1 {
+	font-size: 120px; 
+	letter-spacing: -5px;
+}
+
+@media screen and (max-width: 640px) {
+	h1 {
+	font-size: 60px;
+	letter-spacing: -1px;
+	}
+}
+
+@media screen and (max-width: 449px) {
+	h2 {
+	font-size: 30px;
+	}
+}
